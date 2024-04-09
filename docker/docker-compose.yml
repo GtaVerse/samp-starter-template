@@ -1,0 +1,37 @@
+version: '3.8'
+
+networks:
+  mysql_network:
+
+volumes:
+  pma_volume:
+
+services:
+  mysql:
+    image: mysql:8.3.0
+    container_name: mysql-container
+    restart: always
+    env_file: .env
+    ports:
+      - "3306:3306"
+    networks:
+      - mysql_network
+    volumes:
+      - pma_volume:/var/lib/mysql
+    command:  --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin-container
+    restart: always
+    env_file: .env
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      PMA_USER: root
+      PMA_PASSWORD: ${PMA_PASSWORD}
+    networks:
+      - mysql_network

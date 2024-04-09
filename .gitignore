@@ -1,0 +1,5 @@
+.vscode
+.idea
+
+# We don't need .env file after the initial push
+#.env
